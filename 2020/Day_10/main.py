@@ -34,63 +34,22 @@ def part_one(content):
 
 
 def part_two(content):
-    all_the_ways = 0
-    is_done = False
-    shortest_solution = [0]
-
     content.sort()
     built_in = content[-1] + 3
     content.append(built_in)
     content.insert(0, 0)
+    adaptors = content.copy()
 
-    # immer eine Zahl rausnehmen und schauen, ob die Bedingung noch gilt
-    for i in range(1, len(content)-1):
-        pass
+    # solution from: https://github.com/anand2312/advent-of-code/blob/main/2020/Python/day_10_task2.py
+    path_counts = {adaptors[0]: 1}
 
-    i = 0
-    # find the shortest solution (biggest possible steps between adapters)
-    while not is_done:
-        try:
-            if (content[i+1] - content[i]) == 3:
-                shortest_solution.append(content[i+1])
-                i = i + 1
-            elif (content[i+2] - content[i]) == 3:
-                shortest_solution.append(content[i+2])
-                i = i + 2
-            elif (content[i+3] - content[i]) == 3:
-                shortest_solution.append(content[i+3])
-                i = i + 3
-            elif (content[i+1] - content[i]) == 2:
-                shortest_solution.append(content[i+1])
-                i = i + 1
-            elif (content[i+2] - content[i]) == 2:
-                shortest_solution.append(content[i+2])
-                i = i + 2
-            elif (content[i+1] - content[i]) == 1:
-                shortest_solution.append(content[i+1])
-                i = i + 1
-            else:
-                print(f'Unexpected problem (i = {i})')
-        except IndexError:
-            # If IndexError occured then the shortest solution must have been found
-            is_done = True
-            if shortest_solution[-1] != built_in:  # add the built_in value, if it is not yet in the list
-                shortest_solution.append(built_in)
-            all_the_ways = 1
-            print(f'IndexError: i = {i}')
+    for i in adaptors[1:]:
+        my_sum = 0
+        for j in range(1, 4):
+            my_sum += path_counts.get(i - j, 0)
+        path_counts[i] = my_sum
 
-    # find all the other ways
-
-    return f'All the ways to connect the device: {all_the_ways}'
-
-
-def find_all_the_ways(startindex: int, adapters: []):
-    all_the_ways = 0
-
-    for i in range(startindex, len(adapters)):
-        pass
-
-    return all_the_ways
+    return path_counts.popitem()[1]
 
 
 main()
