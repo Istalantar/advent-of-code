@@ -11,7 +11,7 @@ class TestExample(TestCase):
         self.content = my_input_list("example.txt")
 
     def test_part_one(self):
-        self.assertEqual(part_one(self.content), -1)
+        self.assertEqual(-1, part_one(self.content))
 
     def test_part_two(self):
-        self.assertEqual(part_two(self.content), -1)
+        self.assertEqual(-1, part_two(self.content))
