@@ -1,16 +1,7 @@
-from myFunctions import my_input
-from unittest import TestCase
+import sys
 
-
-class TestExample(TestCase):
-    def setUp(self) -> None:
-        self.content = my_input("example.txt")
-
-    def test_part_one(self):
-        self.assertEqual(part_one(self.content), -1)
-
-    def test_part_two(self):
-        self.assertEqual(part_two(self.content), -1)
+sys.path.append('../..')
+from myFunctions import my_input  # noqa E402
 
 
 def main():
