@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append('../..')
-from myFunctions import my_input  # noqa E402
+from myFunctions import my_input_list  # noqa E402
 
 
 class Vents:
@@ -69,7 +69,7 @@ class Vents:
 
 
 def main():
-    content = my_input("input.txt")
+    content = my_input_list("input.txt")
 
     print(part_one(content))
     print(part_two(content))

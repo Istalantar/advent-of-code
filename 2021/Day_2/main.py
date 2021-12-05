@@ -1,8 +1,8 @@
-from myFunctions import my_input
+from myFunctions import my_input_list
 
 
 def main():
-    content = my_input("input.txt")
+    content = my_input_list("input.txt")
 
     part_one(content)
     part_two(content)
