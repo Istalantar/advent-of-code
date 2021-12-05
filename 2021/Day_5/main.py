@@ -1,15 +1,17 @@
-from myFunctions import my_input
-from unittest import TestCase
+import sys
+
+sys.path.append('../..')
+from myFunctions import my_input  # noqa E402
 
 
 class Vents:
     vent_count = {}  # {(x, y): vent_count}
 
-    def __init__(self, line, part):
+    def __init__(self, line: str, part: int):
         self.is_horizontal = False
         self.is_vertical = False
-        self.v_start = (int(), int())
-        self.v_end = (int(), int())
+        self.v_start: (int(), int())
+        self.v_end: (int(), int())
         self.part = part
         self.__get_coordinates(line)
         self.__get_vent_count()
@@ -64,17 +66,6 @@ class Vents:
                             self.vent_count[(x + i, y - i)] = 1
                         else:
                             self.vent_count[(x + i, y - i)] += 1
-
-
-class TestExample(TestCase):
-    def setUp(self) -> None:
-        self.content = my_input("example.txt")
-
-    def test_part_one(self):
-        self.assertEqual(part_one(self.content), 5)
-
-    def test_part_two(self):
-        self.assertEqual(part_two(self.content), 12)
 
 
 def main():
