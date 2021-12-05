@@ -76,25 +76,38 @@ def main():
 
     content = file_content.split('\n\n')
 
-    part_one(content)
-    part_two(content)
+    print(part_one(content.copy()))
+    print(part_two(content.copy()))
 
 
-def part_one(content):
+def part_one(content) -> int:
     numbers = content.pop(0)
 
     boards = [Bingo(board) for board in content]
+    boards_won = []
 
     for number in numbers.split(','):
         for board in boards.copy():
             if board.find_match(number):
-                print(board)
+                boards_won.append(board)
                 boards.remove(board)
 
+    return boards_won[0].final_score
 
-def part_two(content):
-    # see solution part one
-    pass
+
+def part_two(content) -> int:
+    numbers = content.pop(0)
+
+    boards = [Bingo(board) for board in content]
+    boards_won = []
+
+    for number in numbers.split(','):
+        for board in boards.copy():
+            if board.find_match(number):
+                boards_won.append(board)
+                boards.remove(board)
+
+    return boards_won[-1].final_score
 
 
 if __name__ == '__main__':
