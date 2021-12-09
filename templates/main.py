@@ -12,13 +12,13 @@ def main():
 
 
 def part_one(content) -> int:
-    res = 0
-    return res
+
+    return 0
 
 
 def part_two(content) -> int:
-    res = 0
-    return res
+
+    return 0
 
 
 if __name__ == '__main__':
