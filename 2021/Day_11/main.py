@@ -12,94 +12,67 @@ class Octopuses:
         self.flash_count = 0
         self.step_count = 0
 
-    def increase_step(self):
+    def increase_step(self) -> int:
+        """
+
+        :return: 0 if none ore some octopi flashed, 1 if all octopi flashed at once
+        """
+        ret = 0
         self.step_count += 1
         self.octopi = list(list(map(lambda x: x + 1, row)) for row in self.octopi)
-        self.__check_flash()
+        while self.__check_flash():
+            pass
 
-    def __check_flash(self):
+        if self.__do_all_flash():
+            ret = 1
+
+        return ret
+
+    def __check_flash(self) -> bool:
+        """
+        Checks if the octopusses flashed.
+        :return: Returns True if flash happened, False if no octpus flashed
+        """
+        has_flashed = False
+
         for y, row in enumerate(self.octopi):
             for x in range(self.max_x):
-                # upper left
-                if (y - 1) >= 0 and (x - 1) >= 0 and self.octopi[y][x] > 9:
+                if self.octopi[y][x] > 9:
+                    has_flashed = True
                     self.octopi[y][x] = 0
                     self.flash_count += 1
                     self.__increase_adjacent(x, y)
-                # upper
-                if (y - 1) >= 0:
-                    self.octopi[y][x] = 0
-                    self.flash_count += 1
-                    self.__increase_adjacent(x, y)
-                # upper right
-                if (y - 1) >= 0 and (x + 1) <= self.max_x:
-                    self.octopi[y][x] = 0
-                    self.flash_count += 1
-                    self.__increase_adjacent(x, y)
-                # left
-                if (x - 1) >= 0:
-                    self.octopi[y][x] = 0
-                    self.flash_count += 1
-                    self.__increase_adjacent(x, y)
-                # right
-                if (x + 1) <= self.max_x:
-                    self.octopi[y][x] = 0
-                    self.flash_count += 1
-                    self.__increase_adjacent(x, y)
-                # lower left
-                if (y + 1) <= self.max_y and (x - 1) >= 0:
-                    self.octopi[y][x] = 0
-                    self.flash_count += 1
-                    self.__increase_adjacent(x, y)
-                # lower
-                if (y + 1) <= self.max_y:
-                    self.octopi[y][x] = 0
-                    self.flash_count += 1
-                    self.__increase_adjacent(x, y)
-                # lower right
-                if (y + 1) <= self.max_y and (x + 1) <= self.max_x:
-                    self.octopi[y][x] = 0
-                    self.flash_count += 1
-                    self.__increase_adjacent(x, y)
-                pass
+
+        return has_flashed
+
+    def __do_all_flash(self) -> bool:
+        return bool(sum(sum(self.octopi, [])))
 
     def __increase_adjacent(self, x, y):
-        has_increased = False
-
         # upper left
         if (y - 1) >= 0 and (x - 1) >= 0 and self.octopi[y - 1][x - 1] != 0:
-            self.octopi[y][x] += 1
-            has_increased = True
+            self.octopi[y - 1][x - 1] += 1
         # upper
         if (y - 1) >= 0 and self.octopi[y - 1][x] != 0:
             self.octopi[y - 1][x] += 1
-            has_increased = True
         # upper right
-        if (y - 1) >= 0 and (x + 1) <= self.max_x and self.octopi[y - 1][x + 1] != 0:
+        if (y - 1) >= 0 and (x + 1) < self.max_x and self.octopi[y - 1][x + 1] != 0:
             self.octopi[y - 1][x + 1] += 1
-            has_increased = True
         # left
         if (x - 1) >= 0 and self.octopi[y][x - 1] != 0:
             self.octopi[y][x - 1] += 1
-            has_increased = True
         # right
         if (x + 1) < self.max_x and self.octopi[y][x + 1] != 0:
             self.octopi[y][x + 1] += 1
-            has_increased = True
         # lower left
-        if (y + 1) <= self.max_y and (x - 1) >= 0 and self.octopi[y + 1][x - 1] != 0:
+        if (y + 1) < self.max_y and (x - 1) >= 0 and self.octopi[y + 1][x - 1] != 0:
             self.octopi[y + 1][x - 1] += 1
-            has_increased = True
         # lower
         if (y + 1) < self.max_y and self.octopi[y + 1][x] != 0:
             self.octopi[y + 1][x] += 1
-            has_increased = True
         # lower left
-        if (y + 1) <= self.max_y and (x + 1) <= self.max_x and self.octopi[y + 1][x + 1] != 0:
+        if (y + 1) < self.max_y and (x + 1) < self.max_x and self.octopi[y + 1][x + 1] != 0:
             self.octopi[y + 1][x + 1] += 1
-            has_increased = True
-
-        if has_increased:
-            self.__check_flash()
 
 
 def main():
@@ -114,11 +87,15 @@ def part_one(content) -> int:
     for i in range(100):
         my_octopuses.increase_step()
 
-    return 0
+    return my_octopuses.flash_count
 
 
 def part_two(content) -> int:
-    return 0
+    my_octopuses = Octopuses(content)
+    while my_octopuses.increase_step():
+        pass
+
+    return my_octopuses.step_count
 
 
 if __name__ == '__main__':
