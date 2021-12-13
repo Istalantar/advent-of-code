@@ -12,6 +12,3 @@ class TestExample(TestCase):
 
     def test_part_one(self):
         self.assertEqual(17, part_one(self.content))
-
-    def test_part_two(self):
-        self.assertEqual(-1, part_two(self.content))
