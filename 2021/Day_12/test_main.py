@@ -29,10 +29,10 @@ class TestPartTwo(TestCase):
         self.content_3 = my_input_list("example3.txt")
 
     def test_part_two(self):
-        self.assertEqual(36, part_two(self.content_2))
+        self.assertEqual(36, part_two(self.content))
 
     def test_part_two2(self):
         self.assertEqual(103, part_two(self.content_2))
 
     def test_part_two3(self):
-        self.assertEqual(3509, part_two(self.content_2))
+        self.assertEqual(3509, part_two(self.content_3))
