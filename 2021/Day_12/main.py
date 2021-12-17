@@ -58,18 +58,6 @@ def part_two(content) -> int:
                     connected_caves.append(temp)
         caves_dict[cave] = connected_caves
 
-    # find not allowed caves, e.g. small cave, which would need to be visited twice
-    not_allowed_caves = []
-    for key, val in caves_dict.copy().items():
-        if len(val) <= 1 and val[0].islower():
-            not_allowed_caves.append(key)
-            caves_dict.pop(key)
-
-    # remove not allowed caves
-    for key, val in caves_dict.copy().items():
-        for cave in not_allowed_caves:
-            val.remove(cave) if cave in val else False
-
     # get unique ways
     visited = []
     output_list = []
