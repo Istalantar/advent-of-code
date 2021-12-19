@@ -1,5 +1,4 @@
 import sys
-import binascii
 
 sys.path.append('../..')
 from myFunctions import my_input_string  # noqa E402
@@ -11,9 +10,9 @@ class Literal:
     def __init__(self):
         self.raw = ''
         self.version = None
-        self.pid: int  # packet type ID
+        self.pid = None  # packet type ID
         self.length = 0
-        self.value: int
+        self.value = None
 
     def __repr__(self):
         return self.raw
@@ -23,9 +22,9 @@ class Operator:
     def __init__(self):
         self.raw = ''
         self.version = None
-        self.pid: int  # packet type ID
-        self.lid: int  # length type ID
+        self.pid = None  # packet type ID
         self.length = 0
+        self.value = None
         self.sub_packets = []
 
     def __repr__(self):
@@ -37,6 +36,7 @@ def main():
 
     print(part_one(content))
     print(part_two(content))
+    print("(It's not '9533881890502')")
 
 
 def part_one(content) -> int:
@@ -60,7 +60,22 @@ def part_one(content) -> int:
 
 
 def part_two(content) -> int:
-    return 0
+    global tm
+    bit_len = len(content) * 4
+    tm = bin(int(content, 16))[2:]
+    if len(tm) < bit_len:  # fill with leading zeros
+        tm = '0' * (4 - (len(tm) % 4)) + tm
+    # if hex value starts with zero, four more zeros have to be added to binary,
+    # because they get cut off in conversion
+    if content[0] == '0':
+        tm = '0' * 4 + tm
+    packets = []
+
+    # get all packets
+    while len(tm) >= 11:  # 11 bits is the minimum length for a package
+        packets.append(get_packet())
+
+    return packets[0].value
 
 
 def get_packet():
@@ -142,7 +157,6 @@ def get_operator() -> Operator:
                     # not enough space for another sub packet, but length does not meet the requirement
                     raise Exception('SubPacketLenghtError')
             is_packet_end = True
-
         elif tm[0] == '1':  # sub-packet indicator
             sub_packet_count_max = int(tm[1:12], 2)
             tm = tm[12:]
@@ -157,6 +171,22 @@ def get_operator() -> Operator:
 
             is_packet_end = True
 
+    # calculate value
+    if operator.pid == 0:
+        operator.value = get_sum(operator.sub_packets)
+    elif operator.pid == 1:
+        operator.value = get_product(operator.sub_packets)
+    elif operator.pid == 2:
+        operator.value = min(get_all_vals(operator.sub_packets))
+    elif operator.pid == 3:
+        operator.value = max(get_all_vals(operator.sub_packets))
+    elif operator.pid == 5:
+        operator.value = get_greater(operator)
+    elif operator.pid == 6:
+        operator.value = get_lesser(operator)
+    elif operator.pid == 7:
+        operator.value = get_equal(operator)
+    
     return operator
 
 
@@ -169,6 +199,57 @@ def get_version_sum(packet) -> int:
             v_sum += get_version_sum(sub)
 
     return v_sum
+
+
+def get_sum(packets) -> int:
+    val_sum = 0
+
+    for packet in packets:
+        val_sum += packet.value
+
+    return val_sum
+
+
+def get_product(packets) -> int:
+    val_prod = 1
+
+    for packet in packets:
+        val_prod *= packet.value
+
+    return val_prod
+
+
+def get_all_vals(packets):
+    vals = []
+
+    for packet in packets:
+        vals.append(packet.value)
+    
+    return vals
+
+
+def get_greater(packet) -> int:
+    sub1 = packet.sub_packets[0]
+    sub2 = packet.sub_packets[1]
+    packet.value = 1 if sub1.value > sub2.value else 0
+
+    return packet.value
+
+
+def get_lesser(packet) -> int:
+    sub1 = packet.sub_packets[0]
+    sub2 = packet.sub_packets[1]
+    packet.value = 1 if sub1.value < sub2.value else 0
+
+    return packet.value
+
+
+def get_equal(packet) -> int:
+    sub1 = packet.sub_packets[0]
+    sub2 = packet.sub_packets[1]
+    packet.value = 1 if sub1.value == sub2.value else 0
+
+    return packet.value
 
 
 if __name__ == '__main__':
