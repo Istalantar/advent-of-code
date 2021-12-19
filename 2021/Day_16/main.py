@@ -36,7 +36,6 @@ def main():
 
     print(part_one(content))
     print(part_two(content))
-    print("(It's not '9533881890502')")
 
 
 def part_one(content) -> int:
@@ -186,7 +185,7 @@ def get_operator() -> Operator:
         operator.value = get_lesser(operator)
     elif operator.pid == 7:
         operator.value = get_equal(operator)
-    
+
     return operator
 
 
@@ -224,7 +223,7 @@ def get_all_vals(packets):
 
     for packet in packets:
         vals.append(packet.value)
-    
+
     return vals
 
 

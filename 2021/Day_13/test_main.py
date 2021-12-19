@@ -1,5 +1,5 @@
 from unittest import TestCase
-from main import part_one, part_two
+from main import part_one
 import sys
 
 sys.path.append('../..')

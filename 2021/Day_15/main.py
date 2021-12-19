@@ -106,7 +106,6 @@ def my_dijkstra(cave, risk_graph, unvisited):
 def my_dijkstra2(cave, risks, unvisited):
     x = 0
     y = 0
-    current_node = 0
 
     while unvisited:
         # look into right neighbour

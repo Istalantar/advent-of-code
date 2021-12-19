@@ -12,11 +12,11 @@ for line in lines:
     max_num = int(max_num)
     letter = str(p2[0])
 
-### First part
+# First part
     # if (password.count(letter) >= min_num) & (password.count(letter) <= max_num):
     #     pw_correct += 1
 
-### Second Part
+# Second Part
     if (password[min_num-1] == letter) ^ (password[max_num-1] == letter):
         pw_correct += 1
 

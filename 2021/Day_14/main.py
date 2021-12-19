@@ -45,13 +45,13 @@ def part_one(content) -> int:
         elements.sort(key=lambda x: x[2])
 
         # replace
-        replace_cnt = 0
+        rep_cnt = 0
         for ele in elements:  # ele = [element, insert, index]
-            polymer = polymer[:ele[2] + replace_cnt] + \
-                      polymer[ele[2] + replace_cnt:ele[2] + 2 + replace_cnt].replace(ele[0],
-                                                                                     ele[0][0] + ele[1] + ele[0][1]) + \
-                      polymer[ele[2] + 2 + replace_cnt:]
-            replace_cnt += 1
+            polymer = polymer[:ele[2] + rep_cnt] + \
+                      polymer[ele[2] + rep_cnt:ele[2] + 2 + rep_cnt].replace(ele[0],
+                                                                             ele[0][0] + ele[1] + ele[0][1]) + \
+                      polymer[ele[2] + 2 + rep_cnt:]
+            rep_cnt += 1
 
     polymer = list(polymer)
     letter_count = collections.Counter(polymer)

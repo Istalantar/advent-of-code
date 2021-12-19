@@ -13,7 +13,7 @@ def part_one(content):
     bit_1 = [str]
     bit_2 = [str]
     bit_3 = [str]
-    bit_4 = [str] 
+    bit_4 = [str]
     bit_5 = [str]
     bit_6 = [str]
     bit_7 = [str]
@@ -74,7 +74,7 @@ def part_two(content):
     num_bits = 12
     for i in range(num_bits):
         for report in oxygen:
-            oxy_bits.append(report[i])            
+            oxy_bits.append(report[i])
         for report in co2:
             co2_bits.append(report[i])
 
@@ -92,15 +92,15 @@ def part_two(content):
         co2_bits.clear()
 
     print(int(oxygen[0], 2) * int(co2[0], 2))
-        
+
 
 def get_numbers(my_list, my_index, my_number) -> [str]:
     res_list = []
-    
+
     for number in my_list:
         if number[my_index] == my_number:
-            res_list.append(number)        
-    
+            res_list.append(number)
+
     return res_list
 
 
