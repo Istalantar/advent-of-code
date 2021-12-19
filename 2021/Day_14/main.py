@@ -61,6 +61,7 @@ def part_one(content) -> int:
 
 
 def part_two(content) -> int:
+    # ToDo: Dictionaries are my friend ?
     return 0
 
 
