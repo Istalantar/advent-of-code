@@ -10,8 +10,11 @@ class TestExample(TestCase):
     def setUp(self) -> None:
         self.content = my_input_list("example.txt")
 
-    def test_part_one(self):
+    def test_part_one1(self):
         self.assertEqual(1588, part_one(self.content))
+
+    def test_part_one2(self):
+        self.assertEqual(1588, part_two(self.content))
 
     def test_part_two(self):
         self.assertEqual(2188189693529, part_two(self.content))

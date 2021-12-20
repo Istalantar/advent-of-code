@@ -22,6 +22,7 @@ def main():
 
     print(part_one(content))
     print(part_two(content))
+    print('The result of Part 2 is one too low, because one letter is counted too less')  # see code comment
 
 
 def part_one(content) -> int:
@@ -61,8 +62,45 @@ def part_one(content) -> int:
 
 
 def part_two(content) -> int:
-    # ToDo: Dictionaries are my friend ?
-    return 0
+    start = str(content[0])
+    rules = []
+    polymer = start
+    elements = {}
+    letters = {}
+    steps = 40
+
+    for rule in content[2:]:
+        element, insert = rule.split(' -> ')
+        rules.append((element, insert))
+        for letter in element:
+            letters[letter] = 0
+        elements[element] = 0
+
+    for key, val in elements.items():
+        elements[key] = len(re.findall(key, polymer, overlapped=True))
+
+    for _ in range(steps):
+        cp_eles = elements.copy()
+
+        for ele, ins in rules:
+            if cp_eles[ele] > 0:
+                elements[ele] -= cp_eles[ele]
+                elements[ele[0] + ins] += cp_eles[ele]
+                elements[ins + ele[1]] += cp_eles[ele]
+
+    # count letters
+    # of each pair only the first letter will be counted
+    # this means, that one letter will not be counted (the last letter of the last pair in the polynom)
+    # since I only keep track of the pairs an not the polynom itself, I don't know which would be the last letter
+    for ele_key, ele_val in elements.items():
+        for let_key, let_val in letters.items():
+            if ele_key[0] == let_key:
+                letters[let_key] += ele_val
+
+    letters = list(i for i in letters.items())
+    letters.sort(key=lambda x: x[1], reverse=True)
+
+    return letters[0][1] - letters[-1][1]
 
 
 if __name__ == '__main__':
