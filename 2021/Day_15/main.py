@@ -1,5 +1,6 @@
 import sys
 import copy
+import queue
 
 sys.path.append('../..')
 from myFunctions import my_input_list  # noqa E402
@@ -10,31 +11,35 @@ def main():
 
     print(part_one(content))
     print(part_two(content))
+    print('2791 is not the correct answer!')
 
 
-# noinspection PyTypeChecker
 def part_one(content) -> int:
     max_y = len(content)
     max_x = len(content[0])
     cave = [[int(i) for i in row] for row in content]
 
     risk_graph = []
-    unvisited = set()
+    nodes = set()
     for y in range(max_y):
         row = []
         for x in range(max_x):
-            row.append(None)
-            unvisited.add((x, y))
+            row.append(float('inf'))
+            nodes.add((x, y))
         risk_graph.append(row)
 
     risk_graph[0][0] = 0  # starting point
+    nodes = [(x, y) for x in range(len(cave[0])) for y in range(len(cave))]
 
-    my_dijkstra(cave, risk_graph, unvisited)
+    # create edges (risk from point one to point two
+    # {((x1, y1), (x2, y2)): risk}
+    edges = get_edges(cave, len(cave[0]), len(cave))
 
-    return risk_graph[max_y - 1][max_x - 1]
+    risk_graph = dijkstra(nodes, edges)
+
+    return risk_graph[(len(cave[0]) - 1, len(cave) - 1)]
 
 
-# noinspection PyTypeChecker
 def part_two(content) -> int:
     max_y = len(content)
     max_x = len(content[0])
@@ -44,13 +49,13 @@ def part_two(content) -> int:
     for y in range(max_y):
         row = []
         for x in range(max_x):
-            row.append(None)
+            row.append(float('inf'))
         risk_graph.append(row)
 
     # make 5 times bigger
     risk_graph = [row * 5 for row in risk_graph]
 
-    # adjust risk in x direction
+    # region adjust risk in x direction
     cave = [row * 5 for row in cave]
     for y in range(len(cave)):
         i = 0
@@ -58,13 +63,16 @@ def part_two(content) -> int:
             cave[y][x] = cave[y][x] + i
             cave[y][x] -= 9 if cave[y][x] > 9 else 0
             i += 1 if x % max_x == 9 else 0
+    # endregion
 
-    # adjust risk in y direction
+    # region adjust risk in y direction
     temp_cave = copy.deepcopy(cave)
     temp_risk_grap = copy.deepcopy(risk_graph)
     for _ in range(4):
         cave += copy.deepcopy(temp_cave)
         risk_graph += copy.deepcopy(temp_risk_grap)
+
+    risk_graph[0][0] = 0  # starting point
 
     i = 0
     for y in range(len(cave)):
@@ -72,82 +80,71 @@ def part_two(content) -> int:
             cave[y][x] = cave[y][x] + i
             cave[y][x] -= 9 if cave[y][x] > 9 else 0
         i += 1 if y % max_y == 9 else 0
+    # endregion
 
-    unvisited = {(x, y) for x in range(len(cave[0])) for y in range(len(cave))}
+    nodes = [(x, y) for x in range(len(cave[0])) for y in range(len(cave))]
 
-    # run path search
-    risk_graph[0][0] = 0  # starting point
-    my_dijkstra2(cave, risk_graph, unvisited)
+    # create edges (risk from point one to point two
+    # {((x1, y1), (x2, y2)): risk}
+    edges = get_edges(cave, len(cave[0]), len(cave))
 
-    return risk_graph[len(cave) - 1][len(cave[0]) - 1]
-
-
-def my_dijkstra(cave, risk_graph, unvisited):
-    while unvisited:
-        for y, row in enumerate(risk_graph):
-            for x, risk in enumerate(row):
-                # look into right neighbour
-                if not x + 1 >= len(row):
-                    if risk_graph[y][x + 1] is None:
-                        risk_graph[y][x + 1] = risk + cave[y][x + 1]
-                    elif risk_graph[y][x + 1] > risk + cave[y][x + 1]:
-                        risk_graph[y][x + 1] = risk + cave[y][x + 1]
-
-                # look into below neighbour
-                if not y + 1 >= len(risk_graph):
-                    if risk_graph[y + 1][x] is None:
-                        risk_graph[y + 1][x] = risk + cave[y + 1][x]
-                    elif risk_graph[y + 1][x] > risk + cave[y + 1][x]:
-                        risk_graph[y + 1][x] = risk + cave[y + 1][x]
-
-                unvisited.remove((x, y))
+    risk_graph = dijkstra(nodes, edges)
+    return risk_graph[(len(cave[0]) - 1, len(cave) - 1)]
 
 
-def my_dijkstra2(cave, risks, unvisited):
-    x = 0
-    y = 0
+def dijkstra(nodes, edges):
+    risk_graph = {v: float('inf') for v in nodes}
+    risk_graph[(0, 0)] = 0
+    q = queue.PriorityQueue()
 
-    while unvisited:
-        # look into right neighbour
-        if not x + 1 >= len(risks[0]):
-            if risks[y][x + 1] is None:
-                risks[y][x + 1] = risks[y][x] + cave[y][x + 1]
-            elif risks[y][x + 1] > risks[y][x] + cave[y][x + 1]:
-                risks[y][x + 1] = risks[y][x] + cave[y][x + 1]
+    adjacent_nodes = {v: {} for v in nodes}
+    for (x, y), risk in edges.items():
+        adjacent_nodes[x][y] = risk
 
-        # look into below neighbour
-        if not y + 1 >= len(risks):
-            if risks[y + 1][x] is None:
-                risks[y + 1][x] = risks[y][x] + cave[y + 1][x]
-            elif risks[y + 1][x] > risks[y][x] + cave[y + 1][x]:
-                risks[y + 1][x] = risks[y][x] + cave[y + 1][x]
+    temporary_nodes = [v for v in nodes]
+    q.put((0, (0, 0)))  # first item in queue
+    while len(temporary_nodes) > 0:
+        risk, u = q.get()
+        if u not in temporary_nodes:
+            continue
+        temporary_nodes.remove(u)
 
-        # look into left neighbour
-        if not x - 1 < 0:
-            if risks[y][x - 1] is None:
-                risks[y][x - 1] = risks[y][x] + cave[y][x - 1]
-            elif risks[y][x - 1] > risks[y][x] + cave[y][x - 1]:
-                risks[y][x - 1] = risks[y][x] + cave[y][x - 1]
+        for v, risk in adjacent_nodes[u].items():
+            risk_graph[v] = min(risk_graph[v], risk_graph[u] + risk)
+            if v in temporary_nodes:
+                q.put((risk_graph[v], v))
 
-        # look into upper neighbour
-        if not y - 1 < 0:
-            if risks[y - 1][x] is None:
-                risks[y - 1][x] = risks[y][x] + cave[y - 1][x]
-            elif risks[y - 1][x] > risks[y][x] + cave[y - 1][x]:
-                risks[y - 1][x] = risks[y][x] + cave[y - 1][x]
+        print(len(temporary_nodes))
 
-        # ToDo: follow least risky path
-        # go right
-        if risks[y][x+1] < risks[y+1][x] and risks[y][x+1] < risks[y][x-1]:
-            pass
+    return risk_graph
 
-        # go down
 
-        # go left
+def get_edges(cave, row_size, col_size) -> dict:
+    """
+    :param cave: 2d list of all risks}
+    :param row_size: size of a row
+    :param col_size: size of a column
+    :return: set of all edges with their risk
+    """
+    edges = {}
 
-        # go up
+    for y in range(col_size):
+        is_top_border = True if y == 0 else False
+        is_bottom_border = True if y + 1 == col_size else False
+        for x in range(row_size):
+            is_right_border = True if x + 1 == row_size else False
+            is_left_border = True if x == 0 else False
 
-        unvisited.remove((x, y))
+            if not is_top_border:
+                edges[((x, y), (x, y - 1))] = cave[y - 1][x]
+            if not is_right_border:
+                edges[((x, y), (x + 1, y))] = cave[y][x + 1]
+            if not is_bottom_border:
+                edges[((x, y), (x, y + 1))] = cave[y + 1][x]
+            if not is_left_border:
+                edges[((x, y), (x - 1, y))] = cave[y][x - 1]
+
+    return edges
 
 
 if __name__ == '__main__':
