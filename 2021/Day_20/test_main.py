@@ -23,4 +23,4 @@ class TestPartTwo(TestCase):
         self.content = my_input_string("example.txt")
 
     def test_part_two(self):
-        self.assertEqual(-1, part_two(self.content))
+        self.assertEqual(3351, part_two(self.content))

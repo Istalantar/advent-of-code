@@ -14,7 +14,7 @@ def main():
 def part_one(content) -> int:
     algo, img_in = content.strip().split('\n\n')
     img_out = img_in
-    
+
     for i in range(1, 3):  # image will be enhanced twice
         img_out = enhance(img_out, algo, i)
 
@@ -22,7 +22,13 @@ def part_one(content) -> int:
 
 
 def part_two(content) -> int:
-    return 0
+    algo, img_in = content.strip().split('\n\n')
+    img_out = img_in
+
+    for i in range(1, 51):  # image will be enhanced twice
+        img_out = enhance(img_out, algo, i)
+
+    return sum([True if char == '#' else False for char in img_out])
 
 
 def enhance(image: str, algo: str, enh_cnt: int) -> str:
