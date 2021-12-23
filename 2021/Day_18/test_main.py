@@ -1,47 +1,91 @@
 from unittest import TestCase
-from main import part_one, part_two
+from main import SnailNum
 import sys
 
 sys.path.append('../..')
 from myFunctions import my_input_list  # noqa E402
 
 
-class TestPartOne(TestCase):
+class TestSum(TestCase):
     def setUp(self) -> None:
-        self.content1 = my_input_list("sum_example1.txt")
-        self.content2 = my_input_list("sum_example2.txt")
-        self.content3 = my_input_list("sum_example3.txt")
-        self.content4 = my_input_list("sum_example4.txt")
-        self.content5 = my_input_list("magnitude_example.txt")
+        self.content = my_input_list('sum_example.txt')
 
-    def sum1(self):
-        # ToDo: do addition
-        final_sum = [[[[1, 1], [2, 2]], [3, 3]], [4, 4]]
-        self.assertEqual(final_sum, part_one(self.content1))
+    def test_sum1(self):
+        a = SnailNum('[1,1]')
+        b = SnailNum('[2,2]')
+        c = SnailNum('[3,3]')
+        d = SnailNum('[4,4]')
+        my_sum = a + b + c + d
 
-    def sum2(self):
-        final_sum = [[[[3, 0], [5, 3]], [4, 4]], [5, 5]]
-        self.assertEqual(final_sum, part_one(self.content2))
+        final_sum = '[[[[1, 1], [2, 2]], [3, 3]], [4, 4]]'
+        self.assertEqual(final_sum, my_sum.name())
 
-    def sum3(self):
-        final_sum = [[[[5, 0], [7, 4]], [5, 5]], [6, 6]]
-        self.assertEqual(final_sum, part_one(self.content3))
+    def test_sum2(self):
+        a = SnailNum('[1,1]')
+        b = SnailNum('[2,2]')
+        c = SnailNum('[3,3]')
+        d = SnailNum('[4,4]')
+        e = SnailNum('[5,5]')
+        my_sum = a + b + c + d + e
 
-    def sum4(self):
-        final_sum = [[[[8, 7], [7, 7]], [[8, 6], [7, 7]]], [[[0, 7], [6, 6]], [8, 7]]]
-        self.assertEqual(final_sum, part_one(self.content4))
+        final_sum = '[[[[3, 0], [5, 3]], [4, 4]], [5, 5]]'
+        self.assertEqual(final_sum, my_sum.name())
 
-    def magnitude1(self):
-        self.assertEqual(-1, part_one(self.content5[0]))
+    def test_sum3(self):
+        a = SnailNum('[1,1]')
+        b = SnailNum('[2,2]')
+        c = SnailNum('[3,3]')
+        d = SnailNum('[4,4]')
+        e = SnailNum('[5,5]')
+        f = SnailNum('[6,6]')
+        my_sum = a + b + c + d + e + f
 
-    def magnitude2(self):
-        self.assertEqual(-1, part_one(self.content5[1]))
+        final_sum = '[[[[5, 0], [7, 4]], [5, 5]], [6, 6]]'
+        self.assertEqual(final_sum, my_sum.name())
 
-    def magnitude3(self):
-        self.assertEqual(-1, part_one(self.content5[2]))
+    def test_sum4(self):
+        nums = []
+        for num in self.content:
+            nums.append(SnailNum(num))
 
-    def magnitude4(self):
-        self.assertEqual(-1, part_one(self.content5[3]))
+        my_sum = SnailNum('[]')
+        for num in nums:
+            my_sum += num
 
-    def magnitude5(self):
-        self.assertEqual(-1, part_one(self.content5[4]))
+        final_sum = '[[[[8, 7], [7, 7]], [[8, 6], [7, 7]]], [[[0, 7], [6, 6]], [8, 7]]]'
+        self.assertEqual(final_sum, my_sum.name())
+
+
+class TestExplosion(TestCase):
+    def test_explosion1(self):
+        num_in = SnailNum('[[[[[9,8],1],2],3],4]')
+        num_out = '[[[[0,9],2],3],4]'
+        self.assertEqual(num_out, num_in.name())
+
+    # Todo: add other explosion examples
+
+
+class TestMagnitude(TestCase):
+    def test_magnitude1(self):
+        num = SnailNum('[[1,2],[[3,4],5]]')
+        self.assertEqual(143, num.magnitude())
+
+    def test_magnitude2(self):
+        num = SnailNum('[[[[0,7],4],[[7,8],[6,0]]],[8,1]]')
+        self.assertEqual(1384, num.magnitude())
+
+    def test_magnitude3(self):
+        num = SnailNum('[[[[1,1],[2,2]],[3,3]],[4,4]]')
+        self.assertEqual(445, num.magnitude())
+
+    def test_magnitude4(self):
+        num = SnailNum('[[[[3,0],[5,3]],[4,4]],[5,5]]')
+        self.assertEqual(791, num.magnitude())
+
+    def test_magnitude5(self):
+        num = SnailNum('[[[[5,0],[7,4]],[5,5]],[6,6]]')
+        self.assertEqual(1137, num.magnitude())
+
+    def test_magnitude6(self):
+        num = SnailNum('[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]')
+        self.assertEqual(3488, num.magnitude())
