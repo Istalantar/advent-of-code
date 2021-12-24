@@ -27,6 +27,7 @@ db.sqlite3-journal
 
 # various extensions
 *.xlsx
+*.pptx
 
 # Distribution / packaging
 .Python
