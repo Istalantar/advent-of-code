@@ -58,11 +58,24 @@ class TestSum(TestCase):
 
 class TestExplosion(TestCase):
     def test_explosion1(self):
-        num_in = SnailNum('[[[[[9,8],1],2],3],4]')
-        num_out = '[[[[0,9],2],3],4]'
+        num_in = SnailNum('[[[[[9, 8], 1], 2], 3], 4]')
+        num_out = '[[[[0, 9], 2], 3], 4]'
         self.assertEqual(num_out, num_in.name())
 
-    # Todo: add other explosion examples
+    def test_explosion2(self):
+        num_in = SnailNum('[7, [6, [5, [4, [3, 2]]]]]')
+        num_out = '[7, [6, [5, [7, 0]]]]'
+        self.assertEqual(num_out, num_in.name())
+
+    def test_explosion3(self):
+        num_in = SnailNum('[[6, [5, [4, [3, 2]]]], [1, 1]]')
+        num_out = '[[6, [5, [7, 0]]], [3, 1]]'
+        self.assertEqual(num_out, num_in.name())
+
+    def test_explosion4(self):
+        num_in = SnailNum('[[3, [2, [1, [7, 3]]]], [6, [5, [4, [3, 2]]]]]')
+        num_out = '[[3, [2, [8, 0]]], [9, [5, [7, 0]]]]'
+        self.assertEqual(num_out, num_in.name())
 
 
 class TestMagnitude(TestCase):
