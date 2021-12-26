@@ -148,9 +148,25 @@ class SnailNum:
     def depth(self) -> int:
         return self.__depth(self.num)
 
+    def __magnitude(self, num) -> int:
+        for part in num:
+            # [list, list]
+            if isinstance(num[0], list) and isinstance(num[1], list):
+                return 3 * self.__magnitude(num[0]) + 2 * self.__magnitude(num[1])
+            # [list, int]
+            elif isinstance(num[0], list) and isinstance(num[1], int):
+                return 3 * self.__magnitude(num[0]) + 2 * num[1]
+            # [int, list]
+            elif isinstance(num[0], int) and isinstance(num[1], list):
+                return 3 * num[0] + 2 * self.__magnitude(num[1])
+            # [int, int]
+            elif isinstance(num[0], int) and isinstance(num[1], int):
+                return 3 * num[0] + 2 * num[1]
+            else:
+                raise Exception('SomeWeirdError')
+
     def magnitude(self) -> int:
-        # ToDo: get the magnitude of the number
-        return -1
+        return self.__magnitude(self.num)
 
 
 def main():
