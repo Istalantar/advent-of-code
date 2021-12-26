@@ -102,3 +102,7 @@ class TestMagnitude(TestCase):
     def test_magnitude6(self):
         num = SnailNum('[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]')
         self.assertEqual(3488, num.magnitude())
+
+    def test_magnitude7(self):
+        num = SnailNum('[[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]')
+        self.assertEqual(4140, num.magnitude())
