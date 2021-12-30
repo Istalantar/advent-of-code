@@ -41,7 +41,7 @@ class Alu:
         if b.isalpha() and self.alu[b] != 0:
             self.alu[a] = int(self.alu[a] / self.alu[b])
         elif int(b) != 0:
-            self.alu[a] = int(b)
+            self.alu[a] = int(self.alu[a] / int(b))
 
     def __mod(self, a: str, b: str):
         if b.isalpha() and self.alu[b] != 0:
@@ -64,7 +64,7 @@ def main():
 
 
 def part_one(content):
-    mod_nums = ['12345678912345']
+    mod_nums = ['992989999']
     my_alu = Alu()
     res = 0
     for num in mod_nums:
@@ -73,6 +73,8 @@ def part_one(content):
             temp = line.strip().split()
             if len(temp) == 2:
                 instr, a = temp
+                if not mod_num:  # break for if mod_num is empty
+                    break
                 b = mod_num.pop(0)
             else:
                 instr, a, b = temp
@@ -82,6 +84,10 @@ def part_one(content):
                   f" y: {my_alu.alu['y']}, z: {my_alu.alu['z']}")
 
     # ToDo: figure out the misterious restrictions
+    # only in following seven steps the value of z can decrease
+    # for that to happen the previous value of z needs to be a specific value
+    # 1 <= z%26 - subtractor >= 9
+    subtractors = {4: -6, 6: -12, 10: -2, 11: -5, 12: -4, 13: -4, 14: -12}
 
 
 def part_two(content) -> int:
