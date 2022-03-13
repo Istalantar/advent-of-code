@@ -34,6 +34,13 @@ class SnailNum:
         return str(self.num)
 
     def __reduce(self):
+        """
+        Snailfish numbers must always be reduced. To reduce a snailfish number,
+        you must repeatedly do the first action in this list that applies to the snailfish number:
+        1. If any pair is nested inside four pairs, the leftmost such pair explodes.
+        2. If any regular number is 10 or greater, the leftmost such regular number splits.
+        Once no action in the above list applies, the snailfish number is reduced.
+        """
         is_add_done = False
         while not is_add_done:
             if self.depth() == 5:
@@ -50,36 +57,67 @@ class SnailNum:
 
     def __explode(self, num) -> list:
         self.__current_depth += 1
+        self.__inward = True
 
         # [list, list]
         if isinstance(num[0], list) and isinstance(num[1], list):
-            self.__explode(num[0])
-            self.__explode(num[1])
+            sub_list = self.__explode(num[0])
+            # -> left list of 'num' will explode
+            if isinstance(sub_list[0], int) and isinstance(sub_list[1], int) \
+                    and self.__current_depth == 4 and not self.__has_exploded:
+                num[0] = 0
+                # since we are in depth 4 num[1] must contain two numbers,
+                # thats why I can just add the right number from the exploding pair
+                num[1][0] += sub_list[1]
+                self.__left_num = sub_list[0]  # remember left number of sub list
+                self.__has_exploded = True
+                self.__current_depth -= 1
+                self.__inward = False
+                return num  # return required here, so that next if is not executed
+
+            sub_list = self.__explode(num[1])
+            # -> right list of 'num' will explode
+            if isinstance(sub_list[0], int) and isinstance(sub_list[1], int) \
+                    and self.__current_depth == 4 and not self.__has_exploded:
+                num[1] = 0
+                # since we are in depth 4 num[0] must contain two numbers,
+                # thats why I can just add the left number from the exploding pair
+                num[0][1] += sub_list[0]
+                self.__right_num = sub_list[1]  # remember right number of sub list
+                self.__has_exploded = True
+                self.__current_depth -= 1
+                self.__inward = False
+                return num  # return required here, so that next if is not executed
         # [list, int]
         elif isinstance(num[0], list) and isinstance(num[1], int):
             sub_list = self.__explode(num[0])
             # -> left list of 'num' will explode
-            if isinstance(sub_list[0], int) and isinstance(sub_list[1], int) and not self.__has_exploded:
+            if isinstance(sub_list[0], int) and isinstance(sub_list[1], int) \
+                    and self.__current_depth == 4 and not self.__has_exploded:
                 num[0] = 0
                 num[1] += sub_list[1]
                 self.__left_num = sub_list[0]  # remember left number of sub list
                 self.__has_exploded = True
                 self.__current_depth -= 1
+                self.__inward = False
                 return num  # return required here, so that next if is not executed
         # [int, list]
         elif isinstance(num[0], int) and isinstance(num[1], list):
             sub_list = self.__explode(num[1])
             # -> right list of 'num' will explode
-            if isinstance(sub_list[0], int) and isinstance(sub_list[1], int) and not self.__has_exploded:
+            if isinstance(sub_list[0], int) and isinstance(sub_list[1], int) \
+                    and self.__current_depth == 4 and not self.__has_exploded:
                 num[0] += sub_list[0]
                 num[1] = 0
                 self.__right_num = sub_list[1]  # remember right number of sub list
                 self.__has_exploded = True
                 self.__current_depth -= 1
+                self.__inward = False
                 return num  # return required here, so that next if is not executed
         # [int, int]
         elif isinstance(num[0], int) and isinstance(num[1], int) and self.__current_depth == 5:
             self.__current_depth -= 1
+            self.__inward = False
             return num
         elif isinstance(num[0], int) and isinstance(num[1], int) and self.__current_depth < 5:
             # nothing to do here, just needed for the condition to pass through, in ordner to not raise the exception
@@ -88,15 +126,30 @@ class SnailNum:
             raise Exception("SomeWeirdError")
 
         # when leaving tree, add remembered number to first left/right number
-        # ToDo: get carry over working
-        if self.__right_num is not None and not self.__inward and isinstance(num[1], int):
-            num[1] += self.__right_num
-            self.__right_num = None
-        if self.__left_num is not None and not self.__inward and isinstance(num[0], int):
-            num[1] += self.__left_num
-            self.__left_num = None
+        # ToDo: get carry over working (column index to see what is left/right ?)
+        # if self.__right_num is not None and not self.__inward and isinstance(num[1], int):
+        #     num[1] += self.__right_num
+        #     self.__right_num = None
+        # elif self.__right_num is not None and not self.__inward and isinstance(num[1], list):
+        #     if isinstance(num[1][0], int):
+        #         num[1][0] += self.__right_num
+        #         self.__right_num = None
+        #     elif isinstance(num[1][1], int):
+        #         num[1][1] += self.__right_num
+        #         self.__right_num = None
+        # if self.__left_num is not None and not self.__inward and isinstance(num[0], int):
+        #     num[1] += self.__left_num
+        #     self.__left_num = None
+        # elif self.__left_num is not None and not self.__inward and isinstance(num[0], list):
+        #     if isinstance(num[0][0], int):
+        #         num[0][0] += self.__left_num
+        #         self.__left_num = None
+        #     elif isinstance(num[0][1], int):
+        #         num[0][1] += self.__left_num
+        #         self.__left_num = None
 
         self.__current_depth -= 1
+        self.__inward = False
         return [None, None]
 
     def __add_saved_num(self, num):

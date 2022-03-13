@@ -48,8 +48,8 @@ class TestSum(TestCase):
         for num in self.content:
             nums.append(SnailNum(num))
 
-        my_sum = SnailNum('[]')
-        for num in nums:
+        my_sum = nums[0]
+        for num in nums[1:]:
             my_sum += num
 
         final_sum = '[[[[8, 7], [7, 7]], [[8, 6], [7, 7]]], [[[0, 7], [6, 6]], [8, 7]]]'
@@ -75,6 +75,23 @@ class TestExplosion(TestCase):
     def test_explosion4(self):
         num_in = SnailNum('[[3, [2, [1, [7, 3]]]], [6, [5, [4, [3, 2]]]]]')
         num_out = '[[3, [2, [8, 0]]], [9, [5, [7, 0]]]]'
+        self.assertEqual(num_out, num_in.name())
+
+
+class TestSplit(TestCase):
+    def test_split1(self):
+        num_in = SnailNum('[10, 1]')
+        num_out = '[[5, 5], 1]'
+        self.assertEqual(num_out, num_in.name())
+
+    def test_split2(self):
+        num_in = SnailNum('[11, 1]')
+        num_out = '[[5, 6], 1]'
+        self.assertEqual(num_out, num_in.name())
+
+    def test_split3(self):
+        num_in = SnailNum('[12, 1]')
+        num_out = '[[6, 6], 1]'
         self.assertEqual(num_out, num_in.name())
 
 
