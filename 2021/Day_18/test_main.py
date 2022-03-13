@@ -21,12 +21,9 @@ class TestSum(TestCase):
         self.assertEqual(final_sum, my_sum.name())
 
     def test_sum2(self):
-        a = SnailNum('[1,1]')
-        b = SnailNum('[2,2]')
-        c = SnailNum('[3,3]')
-        d = SnailNum('[4,4]')
-        e = SnailNum('[5,5]')
-        my_sum = a + b + c + d + e
+        a = SnailNum('[[[[1, 1], [2, 2]], [3, 3]], [4, 4]]')
+        b = SnailNum('[5,5]')
+        my_sum = a + b
 
         final_sum = '[[[[3, 0], [5, 3]], [4, 4]], [5, 5]]'
         self.assertEqual(final_sum, my_sum.name())
@@ -43,7 +40,15 @@ class TestSum(TestCase):
         final_sum = '[[[[5, 0], [7, 4]], [5, 5]], [6, 6]]'
         self.assertEqual(final_sum, my_sum.name())
 
-    def test_sum4(self):
+    def test_sum4_1(self):
+        a = SnailNum('[[[0, [4, 5]], [0, 0]], [[[4, 5], [2, 6]], [9, 5]]]')
+        b = SnailNum('[7, [[[3, 7], [4, 3]], [[6, 3], [8, 8]]]]')
+        my_sum = a + b
+
+        final_sum = '[[[[4, 0], [5, 4]], [[7, 7], [6, 0]]], [[8, [7, 7]], [[7, 9], [5, 0]]]]'
+        self.assertEqual(final_sum, my_sum.name())
+
+    def test_sum4_all(self):
         nums = []
         for num in self.content:
             nums.append(SnailNum(num))
@@ -51,6 +56,7 @@ class TestSum(TestCase):
         my_sum = nums[0]
         for num in nums[1:]:
             my_sum += num
+            print(my_sum)
 
         final_sum = '[[[[8, 7], [7, 7]], [[8, 6], [7, 7]]], [[[0, 7], [6, 6]], [8, 7]]]'
         self.assertEqual(final_sum, my_sum.name())
@@ -62,17 +68,27 @@ class TestExplosion(TestCase):
         num_out = '[[[[0, 9], 2], 3], 4]'
         self.assertEqual(num_out, num_in.name())
 
+    def test_explosion1_1(self):
+        num_in = SnailNum('[[[[[1, 1], [2, 2]], [3, 3]], [4, 4]], [5, 5]]')
+        num_out = '[[[[3, 0], [5, 3]], [4, 4]], [5, 5]]'
+        self.assertEqual(num_out, num_in.name())
+
     def test_explosion2(self):
         num_in = SnailNum('[7, [6, [5, [4, [3, 2]]]]]')
         num_out = '[7, [6, [5, [7, 0]]]]'
         self.assertEqual(num_out, num_in.name())
 
     def test_explosion3(self):
+        num_in = SnailNum('[[6, [5, [[4, 3], [3, 2]]]], [1, 1]]')
+        num_out = '[[6, [9, [6, 0]]], [3, 1]]'
+        self.assertEqual(num_out, num_in.name())
+
+    def test_explosion4(self):
         num_in = SnailNum('[[6, [5, [4, [3, 2]]]], [1, 1]]')
         num_out = '[[6, [5, [7, 0]]], [3, 1]]'
         self.assertEqual(num_out, num_in.name())
 
-    def test_explosion4(self):
+    def test_explosion5(self):
         num_in = SnailNum('[[3, [2, [1, [7, 3]]]], [6, [5, [4, [3, 2]]]]]')
         num_out = '[[3, [2, [8, 0]]], [9, [5, [7, 0]]]]'
         self.assertEqual(num_out, num_in.name())
