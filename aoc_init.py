@@ -3,17 +3,16 @@ from os import path, getcwd, makedirs
 from shutil import copyfile
 
 YEAR = 2019
-MAIN_TEMPLATE_PATH = 'C:/Users/andre/Workspace/advent-of-code/templates/main.py'
-TEST_TEMPLATE_PATH = 'C:/Users/andre/Workspace/advent-of-code/templates/test_main.py'
 
 
 def main(day: int):
-    my_path = path.join(getcwd(), f'{YEAR}', f'Day_{day:02}')
+    project_path = getcwd()
+    my_path = path.join(project_path, f'{YEAR}', f'Day_{day:02}')
 
     if not path.exists(my_path):
         makedirs(my_path)
-        copyfile(MAIN_TEMPLATE_PATH, path.join(my_path, 'main.py'))
-        copyfile(TEST_TEMPLATE_PATH, path.join(my_path, 'test_main.py'))
+        copyfile(path.join(project_path, 'templates', 'main.py'), path.join(my_path, 'main.py'))
+        copyfile(path.join(project_path, 'templates', 'test_main.py'), path.join(my_path, 'test_main.py'))
 
         print(f'{YEAR}/Day_{day:02} initialized')
     else:
