@@ -8,10 +8,10 @@ from myFunctions import my_input_list  # noqa E402
 
 class TestExample(TestCase):
     def setUp(self) -> None:
-        self.content = my_input_list("example.txt")
+        self.aoc_input = my_input_list("example.txt")
 
     def test_part_one(self):
-        self.assertEqual(-1, part_one(self.content))
+        self.assertEqual(-1, part_one(self.aoc_input))
 
     def test_part_two(self):
-        self.assertEqual(-1, part_two(self.content))
+        self.assertEqual(-1, part_two(self.aoc_input))

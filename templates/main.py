@@ -5,19 +5,17 @@ from myFunctions import my_input_list  # noqa E402
 
 
 def main():
-    content = my_input_list("input.txt")
+    aoc_input = my_input_list("input.txt")
 
-    print(part_one(content))
-    print(part_two(content))
+    print(part_one(aoc_input.copy()))
+    print(part_two(aoc_input.copy()))
 
 
-def part_one(content) -> int:
-
+def part_one(aoc_input) -> int:  # noqa
     return 0
 
 
-def part_two(content) -> int:
-
+def part_two(aoc_input) -> int:  # noqa
     return 0
 
 
