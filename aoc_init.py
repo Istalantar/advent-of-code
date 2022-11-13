@@ -13,6 +13,7 @@ def main(day: int):
         makedirs(my_path)
         copyfile(path.join(project_path, 'templates', 'main.py'), path.join(my_path, 'main.py'))
         copyfile(path.join(project_path, 'templates', 'test_main.py'), path.join(my_path, 'test_main.py'))
+        open(path.join(my_path, 'example.txt'), 'w')
 
         print(f'{YEAR}/Day_{day:02} initialized')
     else:
