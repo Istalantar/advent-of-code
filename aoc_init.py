@@ -2,7 +2,7 @@ import sys
 from os import path, getcwd, makedirs
 from shutil import copyfile
 
-YEAR = 2019
+YEAR = 2022
 
 
 def main(day: int):
