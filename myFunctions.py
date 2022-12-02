@@ -5,21 +5,14 @@ def my_input_list(file_name) -> list:
     :return: List with all lines from the read file
     """
     with open(file_name, 'r') as file:
-        lines = file.readlines()
-
-    for i in range(len(lines)):
-        lines[i] = lines[i].strip()
-
-    return lines
+        return list(map(str.strip, file.readlines()))
 
 
 def my_input_string(file_name) -> str:
     """
-        Reads a file and returns the string
-        :param file_name: Name of the file to be read
-        :return: File content as String
-        """
+    Reads a file and returns the string
+    :param file_name: Name of the file to be read
+    :return: File content as String
+    """
     with open(file_name, 'r') as file:
-        content = file.read()
-
-    return content
+        return file.read()
