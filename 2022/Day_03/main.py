@@ -27,10 +27,9 @@ def part_one(aoc_input) -> int:  # noqa
 
 def part_two(aoc_input) -> int:  # noqa
     res = 0
-    groups = list(zip(*(iter(aoc_input), ) * 3))
-    for group in groups:
-        inter_1 = set(group[0]).intersection(group[1])
-        item = inter_1.intersection(group[2]).pop()
+    for elf_1, elf_2, elf_3 in zip(*[iter(aoc_input)] * 3):
+        inter_1 = set(elf_1).intersection(elf_2)
+        item = inter_1.intersection(elf_3).pop()
         if item.isupper():
             res += string.ascii_uppercase.index(item) + 27
         else:
