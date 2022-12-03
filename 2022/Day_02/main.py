@@ -12,30 +12,25 @@ def main():
 
 
 def part_one(aoc_input) -> int:  # noqa
-    points_1 = 0
-    points_2 = 0
+    points = 0
     for t_round in aoc_input:
         if 'X' in t_round:  # Rock
-            points_2 += 1
+            points += 1
         if 'Y' in t_round:  # Paper
-            points_2 += 2
+            points += 2
         if 'Z' in t_round:  # Scissors
-            points_2 += 3
+            points += 3
 
-        players = t_round.strip().split(' ')
         if 'A' in t_round and 'X' in t_round \
                 or 'B' in t_round and 'Y' in t_round \
                 or 'C' in t_round and 'Z' in t_round:
-            points_1 += 3
-            points_2 += 3
+            points += 3
         elif 'A' in t_round and 'Y' in t_round \
                 or 'B' in t_round and 'Z' in t_round \
                 or 'C' in t_round and 'X' in t_round:
-            points_2 += 6
-        else:
-            points_1 += 6
+            points += 6
 
-    return points_2
+    return points
 
 
 def part_two(aoc_input) -> int:  # noqa
