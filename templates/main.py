@@ -11,12 +11,12 @@ def main():
     print(part_two(aoc_input.copy()))
 
 
-def part_one(aoc_input) -> int:  # noqa
-    return 0
+def part_one(aoc_input) -> int:
+    return -1
 
 
-def part_two(aoc_input) -> int:  # noqa
-    return 0
+def part_two(aoc_input) -> int:
+    return -1
 
 
 if __name__ == '__main__':
