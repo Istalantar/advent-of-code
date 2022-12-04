@@ -18,3 +18,9 @@ class TestExample(TestCase):
 
     def test_part_one_2(self):
         self.assertEqual(135, part_one(self.ex_2))
+
+    def test_part_two_1(self):
+        self.assertEqual(610, part_two(self.ex_1))
+
+    def test_part_two_2(self):
+        self.assertEqual(410, part_two(self.ex_2))
