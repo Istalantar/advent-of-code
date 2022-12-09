@@ -11,7 +11,7 @@ class TestExample(TestCase):
         self.aoc_input = my_input_list("example.txt")
 
     def test_part_one(self):
-        self.assertEqual(-1, part_one(self.aoc_input))
+        self.assertEqual(None, part_one(self.aoc_input))
 
     def test_part_two(self):
-        self.assertEqual(-1, part_two(self.aoc_input))
+        self.assertEqual(None, part_two(self.aoc_input))
