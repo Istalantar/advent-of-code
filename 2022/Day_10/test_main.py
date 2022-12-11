@@ -12,3 +12,6 @@ class TestExample(TestCase):
 
     def test_part_one(self):
         self.assertEqual(13140, part_one(self.aoc_input))
+
+    def test_part_two(self):
+        self.assertEqual(13140, part_two(self.aoc_input))
