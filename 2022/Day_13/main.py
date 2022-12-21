@@ -1,7 +1,6 @@
 import sys
 from itertools import zip_longest
 
-
 sys.path.append('../..')
 from myFunctions import my_input_string  # noqa E402
 
@@ -9,7 +8,7 @@ from myFunctions import my_input_string  # noqa E402
 def main():
     aoc_input = my_input_string("input.txt")
 
-    print(f'{part_one(aoc_input)} (wrong: 6167, 5916, 5591, 5061)')
+    print(part_one(aoc_input))
     print(part_two(aoc_input))
 
 
@@ -17,19 +16,32 @@ def part_one(aoc_input) -> int:
     pairs = map(str.strip, aoc_input.split('\n\n'))
     pair_objs = dict()
     for index, input_pair in enumerate(pairs):
-        pair = Pair(*input_pair.split('\n'))
+        pair = Pair(*map(eval, input_pair.split('\n')))
         pair_objs[index + 1] = pair
     return sum([i if v.is_right_order else 0 for i, v in pair_objs.items()])
 
 
 def part_two(aoc_input) -> int:
-    return -1
+    packets = aoc_input.replace('\n\n', '\n').strip().split('\n')
+    packets = [eval(packet.strip()) for packet in packets]
+    packets.append([[2]])
+    packets.append([[6]])
+
+    bubble_sort = True
+    while bubble_sort:
+        bubble_sort = False
+        for i in range(len(packets) - 1):
+            if not Pair(packets[i], packets[i + 1]).is_right_order:
+                packets[i], packets[i + 1] = packets[i + 1], packets[i]
+                bubble_sort = True
+
+    return (packets.index([[2]]) + 1) * (packets.index([[6]]) + 1)
 
 
 class Pair:
     def __init__(self, left, right):
-        self.left = eval(left)
-        self.right = eval(right)
+        self.left = left
+        self.right = right
         self.depth = 0
         self.is_right_order = False
         self.decision = ''
