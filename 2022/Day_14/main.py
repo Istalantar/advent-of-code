@@ -21,8 +21,10 @@ def part_one(aoc_input) -> int:
 def part_two(aoc_input) -> int:
     cave = Cave(aoc_input)
     cave.max_y += 2
-    while not cave.has_reached_void:
+    cave.init_floor()
+    while cave.sand_height > 0:
         cave.sand_fall()
+        assert cave.max_y > cave.sand_y
     return cave.sand_units
 
 
@@ -31,10 +33,15 @@ class Cave:
         self.sand_x = 500
         self.sand_y = 0
         self.sand_units = 0
+        self.sand_height = float('inf')  # the smaller the number, the higher the sand
         self.cave = {}
         self.has_reached_void = False
         self._build_walls(aoc_input)
         self.max_y = max([y for _, y in self.cave.keys()])  # end of cave
+
+    def init_floor(self):
+        """Build the cave floor, so that there is no void. (Part 2 only)"""
+        self.cave.update({(x, self.max_y): '#' for x in range(0, 1000)})
 
     def sand_fall(self):
         """Lets sand fall down one unit, and checks for walls to know where the sand can fall."""
@@ -62,6 +69,7 @@ class Cave:
         # if sand does not fall, it landed
         self.cave[(self.sand_x, self.sand_y)] = '#'
         self.sand_units += 1
+        self.sand_height = self.sand_y if self.sand_y < self.sand_height else self.sand_height
         self._get_next_sand()
         return
 

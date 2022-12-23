@@ -14,4 +14,5 @@ class TestExample(TestCase):
         self.assertEqual(24, part_one(self.aoc_input))
 
     def test_part_two(self):
+        # Somehow the unittest fails, but the answer with the actual input is correct
         self.assertEqual(93, part_two(self.aoc_input))
