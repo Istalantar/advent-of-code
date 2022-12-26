@@ -23,26 +23,14 @@ def part_one(aoc_input) -> int:
 
 def part_two(aoc_input) -> int:
     cubes = list(map(lambda l: tuple(map(int, l.strip().split(','))), aoc_input))
-    sides = len(cubes) * 6
-    for x, y, z in cubes:
-        for neighbour in neighbours(x, y, z):
-            if neighbour in cubes:
-                sides -= 1
-    all_x = [x for x, _, _ in cubes]
-    all_y = [y for _, y, _ in cubes]
-    all_z = [z for _, _, z in cubes]
-    min_x, max_x = min(all_x), max(all_x)
-    min_y, max_y = min(all_y), max(all_y)
-    min_z, max_z = min(all_z), max(all_z)
-    for x in range(min_x, max_x + 1):
-        for y in range(min_y, max_y + 1):
-            for z in range(min_z, max_z + 1):
-                if (x, y, z) in cubes:
-                    continue
-                else:
-                    pass
-                if all([(dx, dy, dz) in cubes for dx, dy, dz in neighbours(x, y, z)]):
-                    sides -= 6
+    sides = 0
+    for cube in cubes:
+        for x, y, z in neighbours(*cube):
+            if (x, y, z) in cubes:
+                continue
+            if not all([(dx, dy, dz) in cubes for dx, dy, dz in neighbours(x, y, z)]):
+                sides += 1
+            # ToDo: solve two air pieces next to each other
     return sides
 
 
