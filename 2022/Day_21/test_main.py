@@ -14,4 +14,4 @@ class TestExample(TestCase):
         self.assertEqual(152, part_one(self.aoc_input))
 
     def test_part_two(self):
-        self.assertEqual(None, part_two(self.aoc_input))
+        self.assertEqual(301, part_two(self.aoc_input))

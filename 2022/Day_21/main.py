@@ -36,6 +36,39 @@ def part_one(aoc_input) -> int:
 
 
 def part_two(aoc_input) -> int:
+    numbers = {}
+    open_operations = []
+    for monkey in aoc_input:
+        assert isinstance(monkey, str)
+        name: str
+        operation: str
+        name, operation = monkey.split(': ')
+        if operation.isnumeric():
+            numbers[name] = int(operation)
+            continue
+
+        if name == 'root':
+            open_operations.append(Monkey(name, *map(str.strip, operation.split('+')), '=='))
+            continue
+
+        for operator in ['+', '-', '*', '/']:
+            if operator in operation:
+                open_operations.append(Monkey(name, *map(str.strip, operation.split(operator)), operator))
+
+    # ToDo: try to solve as equation (substitute strings maybe)
+    for humn in range(1001, 10001):
+        temp_numbers = numbers.copy()
+        temp_open_ops = open_operations.copy()
+        temp_numbers['humn'] = humn
+        while 'root' not in temp_numbers.keys():
+            for monkey in temp_open_ops.copy():
+                if monkey.left in temp_numbers and monkey.right in temp_numbers:
+                    if monkey.name == 'root' and monkey.do_operation(temp_numbers[monkey.left],
+                                                                     temp_numbers[monkey.right]) is True:
+                        return humn
+                    temp_numbers[monkey.name] = monkey.do_operation(temp_numbers[monkey.left],
+                                                                    temp_numbers[monkey.right])
+                    temp_open_ops.remove(monkey)
     return -1
 
 
