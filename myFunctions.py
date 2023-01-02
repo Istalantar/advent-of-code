@@ -1,4 +1,4 @@
-def my_input_list(file_name) -> list:
+def my_input_list(file_name) -> list[str]:
     """
     Reads all lines of a file and removes left and right white spaces
     :param file_name: Name of the file to be read
