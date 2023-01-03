@@ -21,7 +21,12 @@ def part_one(aoc_input) -> int:
 
 
 def part_two(aoc_input) -> int:
-    return -1
+    my_map, my_path = aoc_input.split('\n\n')
+    assert isinstance(my_map, str) and isinstance(my_path, str)
+    board = Board(my_map, my_path)
+    board.follow_path_cube()
+
+    return 1000 * board.position[1] + 4 * board.position[0] + board.facing
 
 
 class Board:
@@ -49,6 +54,7 @@ class Board:
                 return
 
     def follow_path(self):
+        """Follows path with rules of part 1"""
         for step in self.path.split():
             if step == 'L':
                 self.facing = self.facing - 1 if self.facing > 0 else 3
@@ -57,6 +63,23 @@ class Board:
             elif step.isnumeric():
                 for _ in range(int(step)):
                     next_tile = self._next_tile()
+                    if next_tile == (None, None):
+                        break
+                    else:
+                        self.position = next_tile
+            else:
+                raise Exception('Unexpected step.')
+
+    def follow_path_cube(self):
+        """Follows path with rules of part 2"""
+        for step in self.path.split():
+            if step == 'L':
+                self.facing = self.facing - 1 if self.facing > 0 else 3
+            elif step == 'R':
+                self.facing = self.facing + 1 if self.facing < 3 else 0
+            elif step.isnumeric():
+                for _ in range(int(step)):
+                    next_tile = self._next_tile_cube()
                     if next_tile == (None, None):
                         break
                     else:
@@ -105,6 +128,9 @@ class Board:
                     return None, None
 
         raise Exception('Unexpected next step')
+
+    def _next_tile_cube(self):
+        raise NotImplementedError
 
 
 if __name__ == '__main__':
