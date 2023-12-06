@@ -44,7 +44,30 @@ def part_one(aoc_input) -> int:
 
 
 def part_two(aoc_input) -> int:
-    return -1
+    time = int(aoc_input[0].split(':')[1].replace(' ', ''))
+    distance = int(aoc_input[1].split(':')[1].replace(' ', ''))
+
+    # find record with least acceleration time
+    v = 0
+    t_win_min = t_win_max = 0
+    for t in range(1, time):
+        v += 1
+        d = v * (time - t)
+        if d > distance:
+            t_win_min = t
+            break
+
+    # find record with most acceleration time
+    v = time
+    for t in range(time - 1, 0, -1):
+        v -= 1
+        d = v * (time - t)
+        if d > distance:
+            t_win_max = t
+            break
+
+    # find number of possible wins
+    return t_win_max - t_win_min + 1
 
 
 if __name__ == '__main__':
