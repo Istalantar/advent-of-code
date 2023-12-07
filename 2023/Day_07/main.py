@@ -61,16 +61,15 @@ class CamelHand:
         self.bid = bid
         if joker:
             # game with joker, where 'J' is the weakest card
-            self.LABEL_VALUE = {'A': 14, 'K': 13, 'Q': 12, 'T': 10, '9': 9, '8': 8,
-                                '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2, 'J': 1}
+            self.labels = 'J23456789TQKA'
         else:
-            self.LABEL_VALUE = {'A': 14, 'K': 13, 'Q': 12, 'J': 11, 'T': 10, '9': 9,
-                                '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2}
+            self.labels = '23456789TJQKA'
         self.hand_type: HandType = self._get_hand_type()
         if joker:
             self.hand_type = self.consider_joker()
 
     def _get_hand_type(self) -> HandType:
+        """Evaluate the hand type, without considering a joker."""
         label_count = len(set(self.hand))
         if label_count == 1:
             # can only be five of a kind
@@ -101,6 +100,7 @@ class CamelHand:
             raise ValueError(f'Invalid label count: {label_count=}, {self.hand=}')
 
     def consider_joker(self) -> HandType:
+        """Adjust the hand type by considering jokers."""
         joker_count = self.hand.count('J')
         if joker_count == 0:
             return self.hand_type
@@ -123,6 +123,7 @@ class CamelHand:
             return HandType.ONE_PAIR
 
     def __gt__(self, other) -> bool:
+        """Compare hands by hand type, and if the're equal by label strength."""
         if self.hand_type > other.hand_type:
             # hand one is stronger
             return True
@@ -132,8 +133,8 @@ class CamelHand:
         else:
             # both hand have the same strength
             for a, b in zip(self.hand, other.hand):
-                val_a = self.LABEL_VALUE[a]
-                val_b = self.LABEL_VALUE[b]
+                val_a = self.labels.index(a)
+                val_b = self.labels.index(b)
                 if val_a > val_b:
                     return True
                 elif val_a < val_b:
