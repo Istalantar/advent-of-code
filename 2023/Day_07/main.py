@@ -28,7 +28,18 @@ def part_one(aoc_input) -> int:
 
 
 def part_two(aoc_input) -> int:
-    return -1
+    hands = []
+    for hand_and_bid in aoc_input:
+        cards, bid = hand_and_bid.split()
+        hands.append(CamelHand(cards, int(bid), joker=True))
+
+    hands.sort()  # sort from lowest to highest hand
+    total_winnings = 0
+    hand: CamelHand
+    for i, hand in enumerate(hands):
+        total_winnings += (i + 1) * hand.bid
+
+    return total_winnings
 
 
 class HandType(Enum):
@@ -45,13 +56,19 @@ class HandType(Enum):
 
 
 class CamelHand:
-    LABEL_VALUE = {'A': 14, 'K': 13, 'Q': 12, 'J': 11, 'T': 10, '9': 9,
-                   '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2}
-
-    def __init__(self, hand: str, bid: int):
+    def __init__(self, hand: str, bid: int, joker: bool = False):
         self.hand = hand
         self.bid = bid
+        if joker:
+            # game with joker, where 'J' is the weakest card
+            self.LABEL_VALUE = {'A': 14, 'K': 13, 'Q': 12, 'T': 10, '9': 9, '8': 8,
+                                '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2, 'J': 1}
+        else:
+            self.LABEL_VALUE = {'A': 14, 'K': 13, 'Q': 12, 'J': 11, 'T': 10, '9': 9,
+                                '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2}
         self.hand_type: HandType = self._get_hand_type()
+        if joker:
+            self.hand_type = self.consider_joker()
 
     def _get_hand_type(self) -> HandType:
         label_count = len(set(self.hand))
@@ -83,6 +100,28 @@ class CamelHand:
         else:
             raise ValueError(f'Invalid label count: {label_count=}, {self.hand=}')
 
+    def consider_joker(self) -> HandType:
+        joker_count = self.hand.count('J')
+        if joker_count == 0:
+            return self.hand_type
+        elif self.hand_type == HandType.FIVE_OF_A_KIND:
+            return HandType.FIVE_OF_A_KIND
+        elif self.hand_type == HandType.FOUR_OF_A_KIND:
+            return HandType.FIVE_OF_A_KIND
+        elif self.hand_type == HandType.FULL_HOUSE:
+            return HandType.FIVE_OF_A_KIND
+        elif self.hand_type == HandType.THREE_OF_A_KIND:
+            return HandType.FOUR_OF_A_KIND
+        elif self.hand_type == HandType.TWO_PAIR:
+            if joker_count == 2:
+                return HandType.FOUR_OF_A_KIND
+            else:
+                return HandType.FULL_HOUSE
+        elif self.hand_type == HandType.ONE_PAIR:
+            return HandType.THREE_OF_A_KIND
+        elif self.hand_type == HandType.HIGH_CARD:
+            return HandType.ONE_PAIR
+
     def __gt__(self, other) -> bool:
         if self.hand_type > other.hand_type:
             # hand one is stronger
@@ -100,6 +139,9 @@ class CamelHand:
                 elif val_a < val_b:
                     return False
         raise ValueError(f'Bigger hand could not be determined: hand 1 = {self.hand}, hand 2 = {other.hand}')
+
+    def __repr__(self) -> str:
+        return f'{self.hand}, {self.hand_type}'
 
 
 if __name__ == '__main__':
