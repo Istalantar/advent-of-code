@@ -36,7 +36,36 @@ def part_one(aoc_input) -> int:
 
 
 def part_two(aoc_input) -> int:
-    return -1
+    nodes = {}
+    starting_nodes = set()
+    ending_nodes = set()
+    for line in aoc_input[2:]:
+        node_name, next_nodes = line.split(' = ')
+        next_nodes = (next_nodes[1:4], next_nodes[6:9])
+        nodes[node_name] = next_nodes
+        if node_name[2] == 'A':
+            starting_nodes.add(node_name)
+        elif node_name[2] == 'Z':
+            ending_nodes.add(node_name)
+
+    not_finished = True
+    i = 0
+    instructions = itertools.cycle(aoc_input[0])
+    current_nodes = starting_nodes
+    while not_finished:
+        i += 1
+        instruction = next(instructions)
+        next_nodes = set()
+        for node in current_nodes:
+            next_node = nodes[node][0] if instruction == 'L' else nodes[node][1]
+            next_nodes.add(next_node)
+
+        if all(node[2] == 'Z' for node in next_nodes):
+            not_finished = False
+        else:
+            current_nodes = next_nodes
+
+    return i
 
 
 if __name__ == '__main__':
